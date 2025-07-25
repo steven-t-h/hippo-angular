@@ -9,7 +9,7 @@ import {NgTemplateOutlet} from '@angular/common';
   template: `
     @if (reviewCount() > 0 && rating() > 3){
       <span [style]="{ height: starHeight }" class="reviews_stars flex h-5 justify-start items-center">
-         @for (type of starTypes; track type) {
+         @for (type of starTypes; track $index) {
            <ng-container [ngTemplateOutlet]="getTemplate(type)"></ng-container>
          }
       </span>
