@@ -1,0 +1,10 @@
+@if (content){
+  <builder-content
+    [model]="model"
+    [content]="content"
+    [apiKey]="apiKey"></builder-content>
+} @else {
+  <div>
+    <p>404 - Content not found</p>
+  </div>
+}
