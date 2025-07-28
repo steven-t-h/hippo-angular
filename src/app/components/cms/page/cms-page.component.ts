@@ -164,7 +164,6 @@ export class CmsPageComponent implements OnInit {
     }
   }
 
-
   async getProps(args: {
     pathname: string;
     fetchOneEntry: (opts: any) => Promise<BuilderContent | null>;
