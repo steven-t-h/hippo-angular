@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { LegacyService } from './legacy.service';
+import { AccountService } from './account.service';
 
-describe('LegacyService', () => {
-  let service: LegacyService;
+describe('AuthService', () => {
+  let service: AccountService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(LegacyService);
+    service = TestBed.inject(AccountService);
   });
 
   it('should be created', () => {

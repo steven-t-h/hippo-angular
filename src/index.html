@@ -1,19 +1,87 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- Start VWO Async SmartCode -->
+  <!--
+     <link rel="preconnect" href="https://dev.visualwebsiteoptimizer.com" />
+  -->
+
+  <!--
+  <script type='text/javascript' id='vwoCode'>
+    try {
+      window._vwo_code || (function() {
+      var account_id=859236,
+      version=2.1,
+      settings_tolerance=2000,
+      hide_element='body',
+      hide_element_style = 'opacity:0 !important;filter:alpha(opacity=0) !important;background:none !important',
+      /* DO NOT EDIT BELOW THIS LINE */
+      f=false,w=window,d=document,v=d.querySelector('#vwoCode'),cK='_vwo_'+account_id+'_settings',cc={};try{var c=JSON.parse(localStorage.getItem('_vwo_'+account_id+'_config'));cc=c&&typeof c==='object'?c:{}}catch(e){}var stT=cc.stT==='session'?w.sessionStorage:w.localStorage;code={use_existing_jquery:function(){return typeof use_existing_jquery!=='undefined'?use_existing_jquery:undefined},library_tolerance:function(){return typeof library_tolerance!=='undefined'?library_tolerance:undefined},settings_tolerance:function(){return cc.sT||settings_tolerance},hide_element_style:function(){return'{'+(cc.hES||hide_element_style)+'}'},hide_element:function(){if(performance.getEntriesByName('first-contentful-paint')[0]){return''}return typeof cc.hE==='string'?cc.hE:hide_element},getVersion:function(){return version},finish:function(e){if(!f){f=true;var t=d.getElementById('_vis_opt_path_hides');if(t)t.parentNode.removeChild(t);if(e)(new Image).src='https://dev.visualwebsiteoptimizer.com/ee.gif?a='+account_id+e}},finished:function(){return f},addScript:function(e){var t=d.createElement('script');t.type='text/javascript';if(e.src){t.src=e.src}else{t.text=e.text}d.getElementsByTagName('head')[0].appendChild(t)},load:function(e,t){var i=this.getSettings(),n=d.createElement('script'),r=this;t=t||{};if(i){n.textContent=i;d.getElementsByTagName('head')[0].appendChild(n);if(!w.VWO||VWO.caE){stT.removeItem(cK);r.load(e)}}else{var o=new XMLHttpRequest;o.open('GET',e,true);o.withCredentials=!t.dSC;o.responseType=t.responseType||'text';o.onload=function(){if(t.onloadCb){return t.onloadCb(o,e)}if(o.status===200){_vwo_code.addScript({text:o.responseText})}else{_vwo_code.finish('&e=loading_failure:'+e)}};o.onerror=function(){if(t.onerrorCb){return t.onerrorCb(e)}_vwo_code.finish('&e=loading_failure:'+e)};o.send()}},getSettings:function(){try{var e=stT.getItem(cK);if(!e){return}e=JSON.parse(e);if(Date.now()>e.e){stT.removeItem(cK);return}return e.s}catch(e){return}},init:function(){if(d.URL.indexOf('__vwo_disable__')>-1)return;var e=this.settings_tolerance();w._vwo_settings_timer=setTimeout(function(){_vwo_code.finish();stT.removeItem(cK)},e);var t;if(this.hide_element()!=='body'){t=d.createElement('style');var i=this.hide_element(),n=i?i+this.hide_element_style():'',r=d.getElementsByTagName('head')[0];t.setAttribute('id','_vis_opt_path_hides');v&&t.setAttribute('nonce',v.nonce);t.setAttribute('type','text/css');if(t.styleSheet)t.styleSheet.cssText=n;else t.appendChild(d.createTextNode(n));r.appendChild(t)}else{t=d.getElementsByTagName('head')[0];var n=d.createElement('div');n.style.cssText='z-index: 2147483647 !important;position: fixed !important;left: 0 !important;top: 0 !important;width: 100% !important;height: 100% !important;background: white !important;';n.setAttribute('id','_vis_opt_path_hides');n.classList.add('_vis_hide_layer');t.parentNode.insertBefore(n,t.nextSibling)}var o='https://dev.visualwebsiteoptimizer.com/j.php?a='+account_id+'&u='+encodeURIComponent(d.URL)+'&vn='+version;if(w.location.search.indexOf('_vwo_xhr')!==-1){this.addScript({src:o})}else{this.load(o+'&x=true')}}};w._vwo_code=code;code.init();})();
+    } catch(e) {
+      console.warn('VWO disabled on server-side rendering. Please enable it in the browser.');
+    }
+  </script>
+
+  -->
+
+  <!-- End VWO Async SmartCode -->
+
   <meta charset="utf-8">
-  <title>Gundry MD | Cart</title>
-  <!-- Set the base meta tags -->
-  <meta name="description" content="Gundry MD Cart">
-  <meta name="keywords" content="Gundry MD, Cart, Checkout, Health, Wellness">
-  <meta name="author" content="Gundry MD">
+  <title>Cart</title>
   <!--Google Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet">
-
-  <!-- Set the base href for routing -->
+  <!--Google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" type="image/png" href="https://cdn.gundrymd.com/images/cart-favicons/gundry-favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.gundrymd.com/images/cart-favicons/gundry-apple-touch-icon.png">
+  <link rel="shortcut icon" type="image/png" sizes="32x32" href="https://cdn.gundrymd.com/images/cart-favicons/gundry-favicon-32x32.png" width="32" height="32">
+  <link rel="shortcut icon" type="image/png" sizes="16x16" href="https://cdn.gundrymd.com/images/cart-favicons/gundry-favicon-16x16.png" width="16" height="16">
+<!--  <script>-->
+<!--    try {-->
+<!--      (function(w, d, s, l, i) {-->
+<!--        w[l] = w[l] || [];-->
+<!--        w[l].push({-->
+<!--          'gtm.start': new Date().getTime(),-->
+<!--          event: 'gtm.js'-->
+<!--        });-->
+<!--        var f = d.getElementsByTagName(s)[0],-->
+<!--          j = d.createElement(s),-->
+<!--          dl = l != 'dataLayer' ? '&l=' + l : '';-->
+<!--        j.async = true;-->
+<!--        j.src ='https://www.googletagmanager.com/gtm.js?id=' + i + dl;-->
+<!--        f.parentNode.insertBefore(j, f);-->
+<!--      })(window, document, 'script', 'dataLayer', 'GTM-5PNTFNV');-->
+<!--    } catch (e) {-->
+<!--      console.warn('GTM disabled on server-side rendering. Please enable it in the browser.');-->
+<!--    }-->
+<!--  </script>-->
+<!--  &lt;!&ndash; Klaviyo Script &ndash;&gt;-->
+<!--  <script defer type="text/javascript" async=""-->
+<!--          src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=SHW4L6">-->
+<!--  </script>-->
+<!--  <script>-->
+<!--    try {-->
+<!--      !function(){if(!window.klaviyo){window._klOnsite=window._klOnsite||[];try{window.klaviyo=new Proxy({},{get:function(n,i){return"push"===i?function(){var n;(n=window._klOnsite).push.apply(n,arguments)}:function(){for(var n=arguments.length,o=new Array(n),w=0;w<n;w++)o[w]=arguments[w];var t="function"==typeof o[o.length-1]?o.pop():void 0,e=new Promise((function(n){window._klOnsite.push([i].concat(o,[function(i){t&&t(i),n(i)}]))}));return e}}})}catch(n){window.klaviyo=window.klaviyo||[],window.klaviyo.push=function(){var n;(n=window._klOnsite).push.apply(n,arguments)}}}}();-->
+<!--    } catch(e) {-->
+<!--      console.warn('Klaviyo disabled on server-side rendering. Please enable it in the browser.');-->
+<!--    }-->
+<!--  </script>-->
+
+  <!-- End Klaviyo Script -->
+  <!-- Attentive Script -->
+<!--  <script async type='text/javascript' src='https://beddn.gundrymd.com/providers/atLabel/load'-->
+<!--          onError='var-->
+<!--    fallbackScript = document.createElement("script");-->
+<!--    fallbackScript.src="https://cdn.attn.tv/gundrymd/dtag.js";-->
+<!--    document.head.appendChild(fallbackScript);'>-->
+<!--  </script>-->
+
+
+  <!-- End Attentive Script -->
 
 </head>
 <body>

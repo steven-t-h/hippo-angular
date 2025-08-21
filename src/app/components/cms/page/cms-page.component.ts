@@ -1,76 +1,72 @@
-import {ChangeDetectorRef, Component, inject, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HttpClient, HttpResponse} from '@angular/common/http';
-import {
-  BuilderContent,
-  Content,
-  fetchOneEntry,
-  getBuilderSearchParams,
-  GetContentOptions,
-  type RegisteredComponent,
-} from '@builder.io/sdk-angular';
-import {firstValueFrom} from 'rxjs';
+import {Component, computed, inject} from '@angular/core';
+import {Content, type RegisteredComponent,} from '@builder.io/sdk-angular';
 import {environment} from '../../../../environments/environment';
 import {CUSTOM_COMPONENTS} from '../builder-registry';
-import {Meta, Title} from '@angular/platform-browser';
 import {AuthService} from '../../../services/auth/auth.service';
+import {CmsService} from '../../../services/cms/cms.service';
+import {LocaleService} from '../../../services/locale/locale.service';
+import {LanguageService} from '../../../services/language/language.service';
+import {ProductService} from '../../../services/product/product.service';
 
-
-interface BuilderProps {
-  canTrack?: boolean;
-  apiKey: string;
-  model: string;
-  content: BuilderContent | null;
-  data?: any;
-  locale: string;
-}
 
 @Component({
   selector: 'gh-cms-page',
   template: `
     @let loggedIn = isLoggedIn();
-    @if (content) {
+    @if (hippoCatalog.isLoading()) {
+      <p class="text-center text-2xl">Loading catalog...</p>
+    } @else if (hippoCatalog.error()) {
+      <p class="text-center text-2xl">Error loading catalog: {{ hippoCatalog.error() }}</p>
+    } @else {
+      <p class="text-center text-2xl">Catalog loaded successfully: {{ hippoCatalog.value()?.length ?? 0 }} Products</p>
+    }
+    @if (content()) {
       <section>
-        @if (authLoading()){
-          <p>Loading...</p>
-        } @else {
-          <p>Logged In: {{ loggedIn }}</p>
-          <button (click)="toggleLogin()">Toggle Login</button>
-        }
+        <p>Logged In: {{ loggedIn }}</p>
+        <button (click)="toggleLogin()">Toggle Login</button>
         <builder-content
           [model]="model"
-          [content]="content"
+          [content]="content()"
           [apiKey]="apiKey"
           [customComponents]="customComponents"
           [data]="{ isLoggedIn: loggedIn }"
-          [locale]="locale"
+          [locale]="locale()"
           [canTrack]="canTrack"
         ></builder-content>
       </section>
+    } @else if (contentLoading()) {
+      <div class="w-fit mx-auto my-10 min-h-screen">
+        <p class="text-center text-2xl">Loading...</p>
+      </div>
     } @else {
-      <div>404 - Content not found</div>
+      <div class="w-fit mx-auto my-10 min-h-screen">
+        <p class="text-center text-2xl">No content found</p>
+      </div>
     }
   `,
   imports: [
-    Content as any // This is a workaround for the fact that Content is not set as a standalone component
+    Content as any,
+    // This is a workaround for the fact that Content is not set as a standalone component
   ],
 })
-export class CmsPageComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private http = inject(HttpClient);
-  private meta = inject(Meta)
-  private title = inject(Title)
-  private cdr = inject(ChangeDetectorRef);
+export class CmsPageComponent {
+  private localeService = inject(LocaleService);
+  private languageService = inject(LanguageService);
   private auth = inject(AuthService);
+  private cmsService = inject(CmsService)
+  private productService = inject(ProductService);
 
-  canTrack: BuilderProps['canTrack'];
-  apiKey: BuilderProps['apiKey'] = '';
-  model: BuilderProps['model'] = 'page';
-  content: BuilderProps['content'] | null = null;
-  data: BuilderProps['data'];
-  locale: BuilderProps['locale'] = 'en-US';
-  customComponents: RegisteredComponent[] = [];
+  canTrack = true;
+  apiKey = environment.builderApiKey;
+  model = 'page';
+  customComponents: RegisteredComponent[] = CUSTOM_COMPONENTS;
+
+  content = this.cmsService.content
+  contentLoading = this.cmsService.contentLoading;
+  hippoCatalog = this.productService.hippoCatalog;
+  locale = computed(() => {
+    return this.languageService.language().toLowerCase() + '-' + this.localeService.locale().code;
+  })
   isLoggedIn = this.auth.isLoggedIn
   authLoading = this.auth.loading;
 
@@ -79,122 +75,7 @@ export class CmsPageComponent implements OnInit {
       await this.auth.logOut()
     } else {
       await this.auth.logIn();
-      await this.handleRouteChange()
     }
   };
-
-
-  private _httpClientFetch = async (url: string, options: RequestInit) => {
-    return firstValueFrom(
-      this.http.request<any>(options.method || 'GET', url, {
-        body: options.body,
-        headers: options.headers as any,
-        ...options,
-        observe: 'response',
-        responseType: 'json',
-      })
-    ).then((response: HttpResponse<any>) => {
-      return {
-        ok: response.status >= 200 && response.status < 300,
-        status: response.status,
-        json: () => Promise.resolve(response.body),
-      };
-    });
-  };
-
-  async ngOnInit(): Promise<void> {
-    // Initial load
-    await this.handleRouteChange();
-
-    // Listen for route changes
-    this.route.url.subscribe(async () => {
-      await this.handleRouteChange();
-    });
-  }
-
-  private async handleRouteChange() {
-    const urlPath = this.router.url.split('?')[0] || '';
-    console.log('CMS Page URL Path:', urlPath);
-
-    const queryParams = this.route.snapshot.queryParams;
-    const searchParams = new URLSearchParams();
-    Object.entries(queryParams).forEach(([key, value]) => {
-      searchParams.append(key, value as string);
-    });
-
-    try {
-      const builderProps = await this.getProps({
-        apiKey: environment.builderApiKey,
-        pathname: urlPath,
-        options: getBuilderSearchParams(searchParams),
-        fetchOneEntry: (args: GetContentOptions) => {
-          return fetchOneEntry({
-            ...args,
-            //@ts-expect-error builder doesn't type this correctly
-            fetch: this._httpClientFetch,
-          });
-        },
-      });
-
-      if (!builderProps) {
-        return;
-      }
-
-      this.content = builderProps.content;
-      this.canTrack = builderProps.canTrack;
-      this.apiKey = builderProps.apiKey;
-      this.model = builderProps.model;
-      this.data = builderProps.data;
-      this.locale = builderProps.locale;
-      this.customComponents = CUSTOM_COMPONENTS;
-
-      if (this.content) {
-        const pageTitle = this.content.data?.title ?? 'Default Title';
-        this.title.setTitle(pageTitle);
-        this.meta.updateTag({ name: 'description', content: this.content.data?.['description'] || 'Default Description' });
-        this.meta.updateTag({ name: 'og:title', content: pageTitle });
-        this.meta.updateTag({ name: 'og:description', content: this.content.data?.['description'] || 'Default Description' });
-        this.meta.updateTag({ name: 'og:image', content: this.content.data?.['seoImage'] || '' });
-      }
-
-      // Trigger change detection to avoid ExpressionChangedAfterItHasBeenCheckedError
-      this.cdr.detectChanges();
-    } catch (error) {
-      console.error('Error handling route change:', error);
-    }
-  }
-
-  async getProps(args: {
-    pathname: string;
-    fetchOneEntry: (opts: any) => Promise<BuilderContent | null>;
-    options?: any;
-    data?: any;
-    apiKey: string;
-  }){
-    const {
-      pathname: _pathname,
-      data = 'mock',
-      fetchOneEntry,
-      options,
-      apiKey,
-    } = args;
-    return {
-      model: 'page',
-      apiKey: apiKey,
-      content: await fetchOneEntry({
-        model: 'page',
-        apiKey: apiKey,
-        userAttributes: { urlPath: _pathname },
-        locale: 'en-US',
-        data: {
-          isLoggedIn: this.isLoggedIn(),
-        },
-        options,
-      }),
-      canTrack: false,
-      data,
-      locale: 'en-US',
-    }
-  }
 }
 

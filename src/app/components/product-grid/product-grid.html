@@ -1,0 +1,121 @@
+<main class="product-grid" #topOfComponent>
+  @if (showFilters()) {
+    <section>
+      <div
+        class="w-full flex flex-col gap-2 justify-center items-stretch p-4 desktop:flex-row desktop:gap-4 desktop:items-center">
+        @for (filter of filters(); track $index) {
+          @let filterType = filter[0];
+          @let filterOptions = filter[1];
+          @let isFilterOpen = selectedFilterKey() === filterType;
+          @let hasSelection = filterOptions.label !== filterOptions.defaultLabel;
+
+          <div class="relative group desktop:cursor-pointer">
+            <!-- Filter trigger -->
+            <div
+              class="cursor-pointer rounded-full border-2 border-[#eeefef] px-6 py-2 hover:bg-[#f1f7ff] hover:text-linkColor"
+              (click)="toggleFilter(filterType)"
+            >
+              @if (hasSelection) {
+                <p
+                  class="flex uppercase font-semibold text-brandPrimary mr-2 desktop:text-md items-center gap-1">
+                  {{ filterOptions.label }}
+                  <mat-icon (click)="clearFilter(filterType); $event.stopPropagation()">close</mat-icon>
+                </p>
+              } @else {
+                <p
+                  class="flex items-center justify-center uppercase text-center text-sm font-bold tracking-wide desktop:text-md">
+                  {{ filterOptions.label }}
+                  <mat-icon>keyboard_arrow_down</mat-icon>
+                </p>
+              }
+            </div>
+
+            <!-- Dropdown -->
+            <div
+              class="p-4 desktop:px-0 desktop:absolute desktop:w-max desktop:min-w-full z-50 hidden group-hover:flex"
+              [class.flex]="isFilterOpen"
+            >
+              <div class="flex flex-col w-full gap-y-4 bg-[#f1f7ff] z-10 p-4 rounded-lg shadow-lg">
+                @for (opt of filterOptions.options; track opt.value) {
+                  <p
+                    (click)="setFilterOption(filterType, opt.value)"
+                    class="text-sm cursor-pointer hover:text-linkColor rounded-full desktop:text-base"
+                  >
+                    {{ opt.label }}
+                  </p>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  <section>
+    <div
+      class="grid grid-cols-1 gap-4 p-4"
+      [class.md:grid-cols-2]="visibleProducts().length === 2 || visibleProducts().length > 2"
+      [class.lg:grid-cols-3]="visibleProducts().length === 1 || visibleProducts().length > 2"
+    >
+      @for (
+        product of visibleProducts() | slice: ((curPage()) * pageSize()): pageSize() + ((curPage()) * pageSize()); track product.slug) {
+        <gh-product-card
+          [class.lg:col-start-2]="visibleProducts().length === 1"
+          [productId]="product.id"
+          [image]="product.cms?.featuredImage ?? product.image!"
+          [name]="product.name"
+          [description]="product.cms?.subHeading ?? ''"
+          [rating]="product.cms?.reviews?.average ?? 0"
+          [reviewCount]="product.cms?.reviews?.count ?? 0"
+          [priceLabel]="memberPriceLabel()"
+          [guestPriceLabel]="guestPriceLabel()"
+          [referralPriceLabel]="referralPriceLabel()"
+          [productSlug]="productLinkPrefix() + product.slug"
+          [productLinkLabel]="productLinkLabel()"
+          [showAddToCartButton]="showAddToCartButton()"
+          [addToCartLabel]="addToCartLabel()"
+          [tagLabels]="product.tags"
+        ></gh-product-card>
+      }
+      @if (visibleProducts().length === 0) {
+        <div class="col-span-3 flex justify-center items-center">
+          <p class="text-lg font-semibold">No products found</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (showPagination() && pages() && pages().length > 1) {
+    <section>
+      <div class="w-full flex justify-center gap-4 items-center p-4">
+        <button
+          class="flex"
+          [disabled]="curPage() === 0"
+          (click)="goToPage((curPage()) - 1)"
+        >
+          <mat-icon [class.text-gray-300]="curPage() === 0">chevron_left</mat-icon>
+        </button>
+
+        @for (page of pages(); track page) {
+          <div
+            (click)="goToPage(page)"
+            class="cursor-pointer"
+            [class.text-brandPrimary]="page === curPage()"
+            [class.font-semibold]="page === curPage()"
+          >
+            {{ page + 1 }}
+          </div>
+        }
+
+        <button
+          class="flex"
+          [disabled]="curPage() === pages().length - 1"
+          (click)="goToPage((curPage()) + 1)"
+        >
+          <mat-icon [class.text-gray-300]="curPage() === pages().length - 1" >chevron_right</mat-icon>
+        </button>
+      </div>
+    </section>
+  }
+</main>
