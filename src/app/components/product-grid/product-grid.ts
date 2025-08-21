@@ -17,7 +17,7 @@ export class ProductGrid {
 
 export const PRODUCT_GRID_COMPONENT: RegisteredComponent = {
   component: ProductGrid,
-  name: "ProductGridComponent",
+  name: "BuilderProductGridComponent",
   meta: {
     selector: "gh-product-grid",
     standalone: true,
